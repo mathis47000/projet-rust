@@ -1,0 +1,36 @@
+# Rust-specific ignores
+/target
+**/*.rs.bk
+*.pdb
+
+# Dependency directories
+/vendor
+cargo.lock
+
+# Environment files
+.env
+.env.local
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+
+# Benchmark output files
+/target/criterion
+
+# Persistent cache files
+*.cache
+*.bin
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
