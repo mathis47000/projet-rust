@@ -1,37 +1,60 @@
-use lru_cache::LRUCache;
-use lru_cache::traits::Cache;
+#[cfg(test)]
+mod tests {
+    use lru_cache::cache::memory::MemoryCache;
+    use lru_cache::core::traits::Cache;
 
-#[test]
-fn test_lru_cache_basic_operations() {
-    let mut cache = LRUCache::new(2);
-    
-    cache.put("key1", 1);
-    cache.put("key2", 2);
-    
-    assert_eq!(cache.get(&"key1"), Some(&1));
-    assert_eq!(cache.len(), 2);
-    
-    cache.put("key3", 3);  // This should evict "key2"
-    
-    assert_eq!(cache.get(&"key2"), None);
-    assert_eq!(cache.get(&"key3"), Some(&3));
-}
-
-#[test]
-fn test_cache_with_custom_types() {
-    #[derive(Clone, Debug, PartialEq)]
-    struct Complex {
-        real: f64,
-        imag: f64,
+    #[test]
+    fn test_basic_cache_operations() {
+        let mut cache = MemoryCache::new(3);
+        
+        // Test put and get
+        assert!(cache.put("A", "value_a").is_ok());
+        assert_eq!(cache.get(&"A"), Some(&"value_a"));
+        assert_eq!(cache.len(), 1);
+        
+        // Test capacity
+        assert!(cache.put("B", "value_b").is_ok());
+        assert!(cache.put("C", "value_c").is_ok());
+        assert!(cache.put("D", "value_d").is_ok());
+        assert_eq!(cache.get(&"A"), None); // A should be evicted
+        assert_eq!(cache.len(), 3);
     }
 
-    let mut cache = LRUCache::new(3);
-    
-    let c1 = Complex { real: 1.0, imag: 2.0 };
-    let c2 = Complex { real: 3.0, imag: 4.0 };
-    
-    cache.put("num1", c1.clone());
-    cache.put("num2", c2.clone());
-    
-    assert_eq!(cache.get(&"num1"), Some(&c1));
+    #[test]
+    fn test_lru_behavior() {
+        let mut cache = MemoryCache::new(3);
+        
+        assert!(cache.put("A", "value_a").is_ok());
+        assert!(cache.put("B", "value_b").is_ok());
+        assert!(cache.put("C", "value_c").is_ok());
+        
+        // Access B, making it most recently used
+        assert_eq!(cache.get(&"B"), Some(&"value_b"));
+        
+        // Add new item, should evict least recently used (A)
+        assert!(cache.put("D", "value_d").is_ok());
+        assert_eq!(cache.get(&"A"), None);
+        assert_eq!(cache.get(&"B"), Some(&"value_b"));
+        assert_eq!(cache.get(&"C"), Some(&"value_c"));
+        assert_eq!(cache.get(&"D"), Some(&"value_d"));
+    }
+
+    #[test]
+    fn test_remove_and_clear() {
+        let mut cache = MemoryCache::new(3);
+        
+        assert!(cache.put("A", "value_a").is_ok());
+        assert!(cache.put("B", "value_b").is_ok());
+        
+        // Test remove
+        assert_eq!(cache.remove(&"A"), Some("value_a"));
+        assert_eq!(cache.get(&"A"), None);
+        assert_eq!(cache.len(), 1);
+        
+        // Test clear
+        cache.clear();
+        assert_eq!(cache.len(), 0);
+        assert!(cache.is_empty());
+        assert_eq!(cache.get(&"B"), None);
+    }
 }
