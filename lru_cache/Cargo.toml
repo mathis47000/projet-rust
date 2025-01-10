@@ -4,7 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+criterion = "0.5.1"
 
 [lib]
 name = "lru_cache"
 path = "src/lib.rs"
+
+[[bench]]
+name = "bench"
+harness = false
