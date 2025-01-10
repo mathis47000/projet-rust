@@ -3,7 +3,6 @@
 mod tests {
     use lru_cache::{cache::memory::MemoryCache, core::traits::Cache};
 
-    // Memory Cache Tests
     #[test]
     fn test_memory_cache_basic_operations() {
         let mut cache = MemoryCache::new(3);
