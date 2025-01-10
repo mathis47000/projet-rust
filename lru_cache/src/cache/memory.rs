@@ -174,4 +174,8 @@ where
     fn capacity(&self) -> usize {
         self.capacity
     }
+    
+    fn get_all(&self) -> &HashMap<K, Node<K, V>> {
+        &self.storage
+    }
 }
