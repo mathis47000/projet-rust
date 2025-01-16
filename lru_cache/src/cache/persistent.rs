@@ -82,21 +82,21 @@ where
 
     fn put(&mut self, key: K, value: V) -> Result<(), CacheError> {
         self.memory_cache.put(key, value)?;
-        self.save_to_file()?; // Sauvegarder après modification
+        self.save_to_file()?;
         Ok(())
     }
 
     fn remove(&mut self, key: &K) -> Option<V> {
         let result = self.memory_cache.remove(key);
         if result.is_some() {
-            self.save_to_file().ok(); // Sauvegarder après suppression
+            self.save_to_file().ok();
         }
         result
     }
 
     fn clear(&mut self) {
         self.memory_cache.clear();
-        self.save_to_file().ok(); // Sauvegarder après nettoyage
+        self.save_to_file().ok();
     }
 
     fn len(&self) -> usize {

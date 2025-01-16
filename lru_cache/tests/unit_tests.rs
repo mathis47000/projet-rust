@@ -7,16 +7,13 @@ mod tests {
     fn test_memory_cache_basic_operations() {
         let mut cache = MemoryCache::new(3);
         
-        // Test put and get
         cache.put(1, "one".to_string()).unwrap();
         assert_eq!(cache.get(&1).map(|v| v.to_string()), Some("one".to_string()));
         
-        // Test capacity
         cache.put(2, "two".to_string()).unwrap();
         cache.put(3, "three".to_string()).unwrap();
         cache.put(4, "four".to_string()).unwrap();
         
-        // First item should be evicted
         assert_eq!(cache.get(&1), None);
         assert_eq!(cache.len(), 3);
     }
